@@ -5,13 +5,14 @@ const DynamicPromptCard = dynamic(() => import('./PromptCard'), {
   loading: () => <PromptLoading />
 })
 
-const PromptCardList = ({ data, handleTagClick }) => {
+const PromptCardList = ({ data, handleEdit, handleTagClick }) => {
   return (
     <div className='mt-16 mb-16 prompt_layout'>
       {data.map((post) => (
         <DynamicPromptCard
           key={post._id}
           post={post}
+          handleEdit={handleEdit}
           handleTagClick={handleTagClick}
         />
       ))}
@@ -42,6 +43,7 @@ const Profile = ({
         <PromptCardList
           data={data}
           handleTagClick={() => { }}
+          handleEdit={handleEdit}
           loading={loading}
         />
       )}
