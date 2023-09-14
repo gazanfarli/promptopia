@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import dynamic from "next/dynamic"
-import PromptLoading from './loading-skeleton/prompt/PromptLoading';
+import PromptLoading from './loading-skeleton/PromptLoading';
 
 const DynamicPromptCard = dynamic(() => import('./PromptCard'), {
   loading: () => <PromptLoading />
