@@ -3,13 +3,12 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { useSession } from 'next-auth/react'
-import { useRouter, usePathname } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import toast from 'react-hot-toast';
 
 const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
   const { data: session } = useSession();
   const pathname = usePathname();
-  const router = useRouter();
   const { prompt, tag } = post;
   const { image, username, email } = post?.creator;
   const [copied, setCopied] = useState('');

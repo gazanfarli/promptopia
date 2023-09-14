@@ -1,26 +1,32 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import { PromptCard } from '.';
+import dynamic from "next/dynamic"
+import PromptLoading from './loading-skeleton/prompt/PromptLoading';
+
+const DynamicPromptCard = dynamic(() => import('./PromptCard'), {
+  loading: () => <PromptLoading />
+})
 
 const PromptCardList = ({ data, handleTagClick }) => {
   return (
-    <div className='mt-16 prompt_layout'>
+    <div className='mt-16 mb-16 prompt_layout'>
       {data.map((post) => (
-        <PromptCard
+        <DynamicPromptCard
           key={post._id}
           post={post}
           handleTagClick={handleTagClick}
         />
       ))}
     </div>
-  );
+  )
 };
 
 
 const Feed = () => {
   const [posts, setPosts] = useState([])
   const [searchText, setSearchText] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSearchChange = (e) => {
     setSearchText(e.target.value)
@@ -28,10 +34,16 @@ const Feed = () => {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const response = await fetch("/api/prompt");
-      const data = await response.json();
-
-      setPosts(data);
+      try {
+        setLoading(true);
+        const response = await fetch("/api/prompt");
+        const data = await response.json();
+        setPosts(data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchPosts();
@@ -49,11 +61,17 @@ const Feed = () => {
           className='search_input peer'
         />
       </form>
-
-      <PromptCardList
-        data={posts}
-        handleTagClick={() => { }}
-      />
+      {loading ? (
+        <div className='prompt_layout mt-16'>
+          {Array(6).fill(<PromptLoading />)}
+        </div>
+      ) : (
+        <PromptCardList
+          data={posts}
+          handleTagClick={() => { }}
+          loading={loading}
+        />
+      )}
     </section>
   )
 }

@@ -1,9 +1,29 @@
-import { PromptCard } from '.'
+import dynamic from "next/dynamic";
+import PromptLoading from "./loading-skeleton/prompt/PromptLoading";
+
+const DynamicPromptCard = dynamic(() => import('./PromptCard'), {
+  loading: () => <PromptLoading />
+})
+
+const PromptCardList = ({ data, handleTagClick }) => {
+  return (
+    <div className='mt-16 mb-16 prompt_layout'>
+      {data.map((post) => (
+        <DynamicPromptCard
+          key={post._id}
+          post={post}
+          handleTagClick={handleTagClick}
+        />
+      ))}
+    </div>
+  )
+};
 
 const Profile = ({
   name,
   desc,
   data,
+  loading,
   handleEdit,
   handleDelete
 }) => {
@@ -14,16 +34,17 @@ const Profile = ({
         <span className='blue_gradient'>{name} Profile</span>
       </h1>
       <p className='desc text-left'>{desc}</p>
-      <div className='mt-10 prompt_layout'>
-        {data.map((post) => (
-          <PromptCard
-            key={post._id}
-            post={post}
-            handleEdit={handleEdit}
-            handleDelete={handleDelete}
-          />
-        ))}
-      </div>
+      {loading ? (
+        <div className='prompt_layout mt-16'>
+          {Array(6).fill(<PromptLoading />)}
+        </div>
+      ) : (
+        <PromptCardList
+          data={data}
+          handleTagClick={() => { }}
+          loading={loading}
+        />
+      )}
     </section>
   )
 }

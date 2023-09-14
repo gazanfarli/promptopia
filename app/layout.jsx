@@ -1,5 +1,7 @@
 import '@/styles/globals.css';
 import { Navbar, Provider } from '@/components';
+import { Toaster } from 'react-hot-toast';
+import 'react-loading-skeleton/dist/skeleton.css'
 
 export const metadata = {
     title: 'Promptopia',
@@ -18,6 +20,7 @@ const RootLayout = ({ children }) => {
                     <main className='app'>
                         <Navbar />
                         {children}
+                        <Toaster />
                     </main>
                 </Provider>
             </body>

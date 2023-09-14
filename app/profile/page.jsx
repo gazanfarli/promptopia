@@ -9,7 +9,8 @@ import { Profile } from '@/components'
 const ProfilePage = () => {
     const router = useRouter();
     const { data: session } = useSession();
-    const [posts, setPosts] = useState([])
+    const [posts, setPosts] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const handleEdit = (post) => {
         router.push(`/update-prompt?id=${post._id}`);
@@ -34,10 +35,12 @@ const ProfilePage = () => {
 
     useEffect(() => {
         const fetchPosts = async () => {
+            setLoading(true);
             const response = await fetch(`api/users/${session?.user?.id}/posts`);
             const data = await response.json();
 
             setPosts(data);
+            setLoading(false)
         };
 
         if (session?.user?.id) fetchPosts();
@@ -49,6 +52,7 @@ const ProfilePage = () => {
             name="My"
             desc="Welcome to your personalized profile page"
             data={posts}
+            loading={loading}
             handleEdit={handleEdit}
             handleDelete={handleDelete}
         />
