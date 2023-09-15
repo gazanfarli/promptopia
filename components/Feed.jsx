@@ -11,7 +11,7 @@ const DynamicPromptCard = dynamic(() => import('./PromptCard'), {
 const PromptCardList = ({ data, handleTagClick }) => {
   return (
     <div className='mt-16 mb-16 prompt_layout'>
-      {data.map((post) => (
+      {data?.map((post) => (
         <DynamicPromptCard
           key={post._id}
           post={post}
@@ -32,12 +32,31 @@ const Feed = () => {
     setSearchText(e.target.value)
   }
 
+  const handleTagClick = (tag) => {
+    setSearchText(tag);
+  }
+
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         setLoading(true);
-        const response = await fetch("/api/prompt");
-        const data = await response.json();
+
+        let response;
+        let data;
+
+        if (searchText.length > 0) {
+          response = await fetch('/api/search', {
+            method: 'POST',
+            headers: {
+              'Content-type': 'application/json'
+            },
+            body: JSON.stringify({ search: searchText })
+          })
+        } else {
+          response = await fetch('/api/prompt');
+        }
+
+        data = await response.json();
         setPosts(data);
       } catch (error) {
         console.log(error);
@@ -47,14 +66,14 @@ const Feed = () => {
     };
 
     fetchPosts();
-  }, []);
+  }, [searchText]);
 
   return (
     <section className='feed'>
       <form className='relative w-full flex-center'>
         <input
           type="text"
-          placeholder='Search for a tag or a username'
+          placeholder='Search for a prompt or a tag'
           value={searchText}
           onChange={handleSearchChange}
           required
@@ -68,7 +87,7 @@ const Feed = () => {
       ) : (
         <PromptCardList
           data={posts}
-          handleTagClick={() => { }}
+          handleTagClick={handleTagClick}
           loading={loading}
         />
       )}
